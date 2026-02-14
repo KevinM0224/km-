@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>San Valentín ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@400;600&family=Sacramento&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            background: linear-gradient(180deg, #fef6f8 0%, #ffe4ec 40%, #ffd1dc 100%);
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Playpen Sans', cursive;
+            position: relative;
+            touch-action: none;
+        }
+
+        /* Fondo decorativo */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 182, 193, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 105, 180, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 182, 193, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Corazón inicial flotante */
+        .initial-heart {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(60px, 15vw, 80px);
+            cursor: pointer;
+            filter: drop-shadow(0 8px 25px rgba(255, 20, 100, 0.35));
+            animation: float 3s ease-in-out infinite;
+            transition: transform 0.3s ease;
+            z-index: 100;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .initial-heart:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+    filter: drop-shadow(0 12px 35px rgba(255, 20, 100, 0.5));
+}
+
+.initial-heart:active {
+    transform: translate(-50%, -50%) scale(1.15);
+    filter: drop-shadow(0 15px 40px rgba(255, 20, 100, 0.6));
+}
+
+
+        .initial-heart.falling {
+            animation: none;
+            transition: all 0.6s cubic-bezier(0.32, 0, 0.67, 0);
+        }
+
+        .initial-heart.hidden {
+            display: none;
+        }
+
+        /* Texto flotante */
+        .floating-text {
+            position: absolute;
+            top: 8%;
+            left: 0;
+            right: 0;
+            font-family: 'Sacramento', cursive;
+            font-size: clamp(32px, 8vw, 48px);
+            color: #d81b60;
+            opacity: 0;
+            animation: fadeInText 1.5s ease-in forwards;
+            text-shadow: 0 2px 20px rgba(216, 27, 96, 0.3);
+            z-index: 10;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        /* Canvas del árbol */
+      .tree-canvas {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(600px, 90vw);
+    height: min(600px, 90vw);
+    max-height: 70vh;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+
+        .tree-canvas.visible {
+            opacity: 1;
+        }
+
+        /* Línea del suelo */
+        .ground-line {
+            position: absolute;
+            bottom: 150px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, #b8887a 50%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .ground-line.visible {
+            opacity: 0.4;
+        }
+
+        /* Corazones flotantes decorativos */
+        .floating-hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-particle {
+            position: absolute;
+            font-size: 20px;
+            animation: floatUp 6s linear infinite;
+            opacity: 0;
+        }
+
+        /* Corazones cayendo del árbol */
+        .tree-falling-heart {
+            position: absolute;
+            animation: fallFromTree 3s ease-in forwards;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Efecto de brillo en canvas */
+        .tree-canvas.visible {
+            animation: gentleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes gentleGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(255, 20, 100, 0.3));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px rgba(255, 20, 100, 0.5));
+            }
+        }
+
+        @keyframes float {
+    0%, 100% {
+        transform: translate(-50%, -50%) translateY(0px) rotate(0deg);
+    }
+    50% {
+        transform: translate(-50%, -50%) translateY(-20px) rotate(5deg);
+    }
+}
+
+
+        @keyframes fallToGround {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+            }
+            50% {
+                transform: translateY(30vh) scale(0.9) rotate(180deg);
+            }
+            100% {
+                transform: translateY(calc(100vh - 250px)) scale(0.6) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeInText {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(0) rotate(0deg);
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+
+        @keyframes fallFromTree {
+            0% {
+                opacity: 1;
+                transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(70vh) translateX(var(--fall-x, 0)) rotate(360deg) scale(0.5);
+            }
+        }
+
+        /* Instrucción */
+        .instruction {
+    position: fixed; /* 🔥 cambiar de absolute a fixed */
+    top: 65%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: clamp(16px, 4vw, 18px);
+    color: #c2185b;
+    opacity: 0;
+    animation: pulse 2s ease-in-out infinite;
+    animation-delay: 1s;
+    font-weight: 600;
+    text-shadow: 0 2px 10px rgba(194, 24, 91, 0.2);
+    white-space: nowrap;
+    text-align: center;
+}
+
+
+        /* Dedicatoria */
+        .dedication {
+            position: fixed;
+            bottom: clamp(20px, 5vw, 30px);
+            right: clamp(20px, 5vw, 30px);
+            font-family: 'Sacramento', cursive;
+            font-size: clamp(24px, 6vw, 36px);
+            color: #d81b60;
+            opacity: 0;
+            animation: fadeInDedication 2s ease-in forwards;
+            text-shadow: 0 3px 15px rgba(216, 27, 96, 0.4);
+            z-index: 200;
+        }
+
+        /* Cuenta regresiva */
+        .countdown-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+            width: 90%;
+            max-width: 600px;
+            padding: 0 20px;
+        }
+
+        .countdown-container.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .countdown-title {
+            font-family: 'Sacramento', cursive;
+            font-size: clamp(32px, 8vw, 48px);
+            color: #d81b60;
+            margin-bottom: clamp(20px, 5vw, 30px);
+            text-shadow: 0 2px 20px rgba(216, 27, 96, 0.3);
+        }
+
+        .countdown-time {
+            display: flex;
+            gap: clamp(10px, 3vw, 30px);
+            justify-content: center;
+            margin-bottom: clamp(20px, 5vw, 30px);
+            flex-wrap: wrap;
+        }
+
+        .time-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.7);
+            padding: clamp(15px, 4vw, 20px) clamp(15px, 4vw, 25px);
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(255, 20, 100, 0.15);
+            backdrop-filter: blur(10px);
+            min-width: clamp(70px, 18vw, 90px);
+            flex: 0 1 auto;
+        }
+
+        .time-value {
+            font-size: clamp(32px, 8vw, 48px);
+            font-weight: 600;
+            color: #c2185b;
+            line-height: 1;
+            font-family: 'Playpen Sans', cursive;
+        }
+
+        .time-label {
+            font-size: clamp(11px, 2.5vw, 14px);
+            color: #d81b60;
+            margin-top: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .countdown-message {
+            font-family: 'Sacramento', cursive;
+            font-size: clamp(24px, 6vw, 32px);
+            color: #e91e63;
+            text-shadow: 0 2px 15px rgba(233, 30, 99, 0.3);
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            padding: 10px 20px;
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .countdown-message:active {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Corazón bloqueado */
+        .initial-heart.locked {
+            cursor: not-allowed;
+            opacity: 0.5;
+            animation: none;
+        }
+
+        .initial-heart.locked:hover {
+            transform: none;
+            filter: drop-shadow(0 8px 25px rgba(255, 20, 100, 0.35));
+        }
+
+        @keyframes fadeInDedication {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes pulse {
+    0%, 100% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="floating-text">San Valentín</div>
+        <div class="countdown-container" id="countdownContainer">
+            <div class="countdown-title">Faltan</div>
+            <div class="countdown-time" id="countdownTime">
+                <div class="time-unit">
+                    <span class="time-value" id="days">00</span>
+                    <span class="time-label">días</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="hours">00</span>
+                    <span class="time-label">horas</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="minutes">00</span>
+                    <span class="time-label">minutos</span>
+                </div>
+                <div class="time-unit">
+                    <span class="time-value" id="seconds">00</span>
+                    <span class="time-label">segundos</span>
+                </div>
+            </div>
+            <div class="countdown-message">no te podia dejar ser espectadora ❤️</div>
+        </div>
+        <div class="instruction" id="instruction">👆 Toca el corazón</div>
+        <div class="initial-heart" id="initialHeart">❤️</div>
+        <canvas class="tree-canvas" id="treeCanvas" width="600" height="600"></canvas>
+        <div class="floating-hearts" id="floatingHearts"></div>
+    </div>
+
+    <script>
+        const initialHeart = document.getElementById('initialHeart');
+        const treeCanvas = document.getElementById('treeCanvas');
+        const floatingHearts = document.getElementById('floatingHearts');
+        const instruction = document.getElementById('instruction');
+        const countdownContainer = document.getElementById('countdownContainer');
+        let ctx = null;
+
+        let hasStarted = false;
+        let treeHearts = []; // Guardar posiciones de corazones del árbol
+        let isValentinesDay = false;
+        let countdownInterval;
+        let secretTapCount = 0;
+        let secretTapTimer = null;
+
+        // Ajustar canvas al tamaño de pantalla
+        function resizeCanvas() {
+            const container = document.querySelector('.container');
+            const size = Math.min(600, window.innerWidth * 0.9, window.innerHeight * 0.7);
+            treeCanvas.width = size;
+            treeCanvas.height = size;
+            treeCanvas.style.width = size + 'px';
+            treeCanvas.style.height = size + 'px';
+            
+            // Re-obtener contexto después de cambiar tamaño
+            ctx = treeCanvas.getContext('2d');
+            console.log('Canvas resized to:', size, 'Context:', ctx ? 'OK' : 'ERROR');
+        }
+
+        // Llamar al redimensionar
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Verificar si es 14 de febrero o después
+        function checkDate() {
+            const now = new Date();
+            const month = now.getMonth(); // 0 = enero, 1 = febrero
+            const day = now.getDate();
+            const currentYear = now.getFullYear();
+            
+            // Crear fecha de San Valentín de este año
+            const valentinesDay = new Date(currentYear, 1, 14, 0, 0, 0);
+            
+            // Si ya es 14 de febrero o una fecha posterior, desbloquear
+            if (now >= valentinesDay) {
+                isValentinesDay = true;
+                instruction.style.opacity = '0';
+                instruction.style.animation = 'pulse 2s ease-in-out infinite';
+                instruction.style.animationDelay = '1s';
+                setTimeout(() => {
+                    instruction.style.opacity = '1';
+                }, 100);
+                initialHeart.classList.remove('locked');
+            } else {
+                // Mostrar cuenta regresiva solo si aún no ha llegado el 14 de febrero
+                isValentinesDay = false;
+                instruction.style.display = 'none';
+                initialHeart.classList.add('locked');
+                countdownContainer.classList.add('visible');
+                startCountdown();
+                setupSecretUnlock();
+            }
+        }
+
+        // Configurar el desbloqueo secreto
+        function setupSecretUnlock() {
+            const countdownMessage = document.querySelector('.countdown-message');
+            
+            if (!countdownMessage) {
+                console.log('Countdown message not found');
+                return;
+            }
+            
+            // Evento para click y touch
+            const handleTap = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                secretTapCount++;
+                
+                console.log('Tap #' + secretTapCount); // Para debugging
+                
+                // Feedback visual
+                this.style.transform = 'scale(1.15)';
+                this.style.background = 'rgba(255, 182, 193, 0.4)';
+                
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                    this.style.background = 'transparent';
+                }, 150);
+                
+                // Reiniciar contador después de 2 segundos si no completa los 3 taps
+                if (secretTapTimer) {
+                    clearTimeout(secretTapTimer);
+                }
+                
+                secretTapTimer = setTimeout(() => {
+                    console.log('Tap count reset');
+                    secretTapCount = 0;
+                }, 2000);
+                
+                // Si llegó a 3 taps, desbloquear
+                if (secretTapCount >= 3) {
+                    console.log('Unlocking!');
+                    unlockSecret();
+                }
+            };
+            
+            countdownMessage.addEventListener('click', handleTap);
+            countdownMessage.addEventListener('touchend', handleTap);
+            
+            console.log('Secret unlock configured');
+        }
+
+        // Desbloquear modo secreto
+        function unlockSecret() {
+            // Limpiar el timer
+            if (secretTapTimer) {
+                clearTimeout(secretTapTimer);
+            }
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            
+            // Animación de desbloqueo
+            countdownContainer.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            countdownContainer.style.opacity = '0';
+            countdownContainer.style.transform = 'translate(-50%, -50%) scale(0.8)';
+            
+            setTimeout(() => {
+                countdownContainer.classList.remove('visible');
+                countdownContainer.style.display = 'none';
+                
+                // Activar modo San Valentín
+                isValentinesDay = true;
+                initialHeart.classList.remove('locked');
+                instruction.style.display = 'block';
+                instruction.style.opacity = '0';
+                instruction.style.animation = 'pulse 2s ease-in-out infinite';
+                instruction.style.animationDelay = '0s';
+                
+                setTimeout(() => {
+                    instruction.style.opacity = '1';
+                }, 100);
+                
+                // Pequeño efecto de partículas para celebrar el desbloqueo
+                for (let i = 0; i < 15; i++) {
+                    setTimeout(() => {
+                        createFloatingParticle();
+                    }, i * 100);
+                }
+            }, 500);
+        }
+
+        // Cuenta regresiva hasta el 14 de febrero
+        function startCountdown() {
+            function updateCountdown() {
+                const now = new Date();
+                const currentYear = now.getFullYear();
+                const valentinesDay = new Date(currentYear, 1, 14, 0, 0, 0);
+                
+                const difference = valentinesDay - now;
+                
+                if (difference <= 0) {
+                    // ¡Es San Valentín o después!
+                    checkDate();
+                    clearInterval(countdownInterval);
+                    return;
+                }
+                
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = String(days).padStart(2, '0');
+                document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+            }
+            
+            updateCountdown();
+            countdownInterval = setInterval(updateCountdown, 1000);
+        }
+
+        // Inicializar
+        checkDate();
+
+        // Crear partícula flotante (definida antes para usar en unlock secreto)
+        function createFloatingParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'floating-particle';
+            particle.innerHTML = ['💕', '💗', '💖', '💝', '❤️'][Math.floor(Math.random() * 5)];
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.fontSize = (15 + Math.random() * 15) + 'px';
+            particle.style.animationDuration = (4 + Math.random() * 3) + 's';
+            particle.style.animationDelay = Math.random() * 2 + 's';
+            
+            floatingHearts.appendChild(particle);
+
+            setTimeout(() => {
+                particle.remove();
+            }, 8000);
+        }
+
+        // Click en el corazón inicial
+        function handleHeartClick(e) {
+            if (hasStarted) return;
+            if (!isValentinesDay) return; // No permitir si no es San Valentín
+            
+            hasStarted = true;
+            e.preventDefault();
+            e.stopPropagation();
+
+            instruction.style.display = 'none';
+            
+            // Animar caída al centro
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            
+            initialHeart.classList.add('falling');
+            initialHeart.style.left = centerX + 'px';
+            initialHeart.style.top = centerY + 'px';
+            initialHeart.style.opacity = '0';
+            initialHeart.style.transform = 'translate(-50%, -50%) scale(0.3) rotate(360deg)';
+            
+            setTimeout(() => {
+                initialHeart.classList.add('hidden');
+                startHeartFormation();
+            }, 600);
+        }
+        
+        initialHeart.addEventListener('click', handleHeartClick);
+        initialHeart.addEventListener('touchend', handleHeartClick);
+        treeCanvas.addEventListener("click", () => {
+    explodeMainHeart();
+});
+        treeCanvas.addEventListener('touchend', handleTreeClick);
+
+        
+
+        // Formar el corazón de corazones
+        function startHeartFormation() {
+            console.log('=== STARTING HEART FORMATION ===');
+            
+            // Asegurar que el canvas esté visible
+            treeCanvas.style.opacity = '1';
+            treeCanvas.classList.add('visible');
+            
+            // Limpiar canvas
+            if (ctx) {
+                ctx.clearRect(0, 0, treeCanvas.width, treeCanvas.height);
+            }
+            
+            const centerX = treeCanvas.width / 2;
+            const centerY = treeCanvas.height / 2;
+            const heartSize = treeCanvas.width * 0.34;
+            
+            console.log('Canvas:', treeCanvas.width, 'x', treeCanvas.height);
+            console.log('Center:', centerX, centerY);
+            console.log('Heart size:', heartSize);
+            console.log('Context available:', ctx ? 'YES' : 'NO');
+            
+            // Dibujar inmediatamente sin timeout
+            bloomHearts(centerX, centerY, heartSize);
+            
+            // Mostrar dedicatoria
+            setTimeout(() => {
+                showDedication();
+            }, 3000);
+            
+            // Iniciar caída de corazones
+            setTimeout(() => {
+                startFloatingParticles();
+                startFallingHearts();
+            }, 4000);
+        }
+
+        // Florecer corazones
+        function bloomHearts(centerX, centerY, size) {
+            console.log('=== BLOOM HEARTS ===');
+            console.log('Parameters:', centerX, centerY, size);
+            
+            const heartPositions = generateHeartShape(centerX, centerY, size);
+            console.log('Generated hearts:', heartPositions.length);
+            
+            if (heartPositions.length === 0) {
+                console.error('NO HEARTS GENERATED!');
+                return;
+            }
+            
+            treeHearts = heartPositions;
+            
+            // Dibujar los primeros 5 inmediatamente para test
+            console.log('Drawing first 5 hearts immediately...');
+            for (let i = 0; i < Math.min(5, heartPositions.length); i++) {
+                const pos = heartPositions[i];
+                console.log(`Heart ${i}:`, pos.x, pos.y, pos.size, pos.color);
+                drawHeart(pos.x, pos.y, pos.size, pos.color, pos.rotation);
+            }
+            
+            // Dibujar el resto con animación
+            heartPositions.forEach((pos, index) => {
+                if (index < 5) return; // Ya dibujamos los primeros 5
+                setTimeout(() => {
+                    drawHeart(pos.x, pos.y, pos.size, pos.color, pos.rotation);
+                }, (index - 5) * 3);
+            });
+            
+            console.log('Bloom complete');
+        }
+
+        // Mostrar dedicatoria
+        function showDedication() {
+            const dedication = document.createElement('div');
+            dedication.className = 'dedication';
+            dedication.innerHTML = 'Para Daniela ❤️';
+            document.querySelector('.container').appendChild(dedication);
+        }
+
+        // Generar forma de corazón hermosa y bien definida
+        function generateHeartShape(centerX, centerY, size) {
+            console.log('=== GENERATING HEART SHAPE ===');
+            console.log('Input:', centerX, centerY, size);
+            
+            const hearts = [];
+            const colors = [
+                '#ff1744', '#e91e63', '#f06292', '#ec407a', 
+                '#c2185b', '#ad1457', '#ff4081', '#f48fb1',
+                '#ff5252', '#ff80ab', '#f50057', '#c51162',
+                '#ff6090', '#ff4468', '#d81b60'
+            ];
+
+            // Generar corazón con mejor forma usando ecuación mejorada
+            for (let layer = 0; layer < 12; layer++) {
+                const layerSize = size * (0.2 + layer * 0.07);
+                const angleStep = layer < 4 ? 0.012 : 0.02;
+
+                
+                for (let angle = 0; angle < Math.PI * 2; angle += angleStep) {
+                    const t = angle;
+                    const scale = layerSize / 16;
+                    
+                    // Ecuación paramétrica del corazón
+                    const x = scale * 16 * Math.pow(Math.sin(t), 3);
+                    const y = -scale * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t));
+                    
+                    const baseX = centerX + x;
+                    const baseY = centerY + y * 1.05 - scale * 1.5;
+
+                    
+                    const offsetX = (Math.random() - 0.5) * 2.5;
+                    const offsetY = (Math.random() - 0.5) * 2.5;
+                    
+                    hearts.push({
+                        x: baseX + offsetX,
+                        y: baseY + offsetY,
+                        size: 6 + Math.random() * 8,
+                        color: colors[Math.floor(Math.random() * colors.length)],
+                        rotation: Math.random() * 360
+                    });
+                }
+            }
+
+            // Relleno del interior
+            for (let i = 0; i < 450; i++) {
+                const t = Math.random() * Math.PI * 2;
+                const r = Math.sqrt(Math.random()) * size * 0.65;
+                const scale = size / 16;
+                
+                const x = r * Math.pow(Math.sin(t), 3) * scale * 16 / size;
+                const y = -r * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)) * scale / size;
+                
+                const baseX = centerX + x;
+                const baseY = centerY + y - scale * 3;
+                
+                hearts.push({
+                    x: baseX + (Math.random() - 0.5) * 8,
+                    y: baseY + (Math.random() - 0.5) * 8,
+                    size: 5 + Math.random() * 7,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * 40
+                });
+            }
+
+            console.log('Generated', hearts.length, 'hearts');
+            console.log('Sample heart:', hearts[0]);
+            return hearts;
+        }
+
+        // Dibujar corazón individual
+        function drawHeart(x, y, size, color, rotation = 0) {
+            if (!ctx) {
+                console.error('❌ Canvas context not available');
+                return;
+            }
+            
+            try {
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(rotation * Math.PI / 180);
+                ctx.scale(size / 10, size / 10);
+                
+                // Sombra suave para profundidad
+                ctx.shadowColor = color;
+                ctx.shadowBlur = 8;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+                
+                ctx.fillStyle = color;
+                
+                // Corazón más suave y orgánico
+                ctx.beginPath();
+                ctx.moveTo(0, 3);
+                ctx.bezierCurveTo(-5, -3, -12, -2, -10, 4);
+                ctx.bezierCurveTo(-10, 8, -5, 11, 0, 14);
+                ctx.bezierCurveTo(5, 11, 10, 8, 10, 4);
+                ctx.bezierCurveTo(12, -2, 5, -3, 0, 3);
+                ctx.fill();
+                
+                // Agregar brillo sutil
+                ctx.globalAlpha = 0.4;
+                ctx.fillStyle = '#fff';
+                ctx.shadowBlur = 0;
+                ctx.beginPath();
+                ctx.arc(-2, -1, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            } catch (error) {
+                console.error('❌ Error drawing heart:', error);
+            }
+        }
+
+        // Partículas flotantes
+        function startFloatingParticles() {
+            setInterval(() => {
+                createFloatingParticle();
+            }, 300);
+        }
+
+        // Corazones cayendo del árbol
+        function startFallingHearts() {
+            setInterval(() => {
+                createFallingHeart();
+            }, 800);
+        }
+
+        function createFallingHeart() {
+            if (treeHearts.length === 0) return;
+            
+            // Seleccionar un corazón aleatorio del árbol
+            const randomHeart = treeHearts[Math.floor(Math.random() * treeHearts.length)];
+            
+            const fallingHeart = document.createElement('div');
+            fallingHeart.className = 'tree-falling-heart';
+            fallingHeart.innerHTML = '❤️';
+            fallingHeart.style.color = randomHeart.color;
+            
+            // Convertir coordenadas del canvas a porcentaje de pantalla
+            const canvasRect = treeCanvas.getBoundingClientRect();
+            const heartX = canvasRect.left + (randomHeart.x / treeCanvas.width) * canvasRect.width;
+            const heartY = canvasRect.top + (randomHeart.y / treeCanvas.height) * canvasRect.height;
+            
+            fallingHeart.style.left = heartX + 'px';
+            fallingHeart.style.top = heartY + 'px';
+            fallingHeart.style.fontSize = Math.max(randomHeart.size * 1.5, 12) + 'px';
+            
+            // Movimiento horizontal aleatorio pequeño
+            const fallX = (Math.random() - 0.5) * 50;
+            fallingHeart.style.setProperty('--fall-x', fallX + 'px');
+            
+            document.querySelector('.container').appendChild(fallingHeart);
+
+            setTimeout(() => {
+                fallingHeart.remove();
+            }, 3000);
+        
+        }
+
+        function handleTreeClick(e) {
+    if (!hasStarted) return;
+
+    const rect = treeCanvas.getBoundingClientRect();
+    const clickX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX);
+    const clickY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY);
+
+    const x = clickX - rect.left;
+    const y = clickY - rect.top;
+
+    // Verificar si el click está cerca de un corazón dibujado
+    const hit = treeHearts.find(h => {
+        const dx = h.x - x;
+        const dy = h.y - y;
+        return Math.sqrt(dx * dx + dy * dy) < 15;
+    });
+
+    if (!hit) return;
+
+    explodeHearts(rect.left + x, rect.top + y);
+}
+
+
+function explodeHearts(originX, originY) {
+    const heartsCount = 18;
+    const emojis = ['❤️','💖','💕','💗','💞'];
+
+    for (let i = 0; i < heartsCount; i++) {
+        const miniHeart = document.createElement('div');
+        miniHeart.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
+        miniHeart.style.position = 'fixed';
+        miniHeart.style.left = originX + 'px';
+        miniHeart.style.top = originY + 'px';
+        miniHeart.style.pointerEvents = 'none';
+        miniHeart.style.fontSize = (14 + Math.random() * 14) + 'px';
+        miniHeart.style.zIndex = 300;
+        miniHeart.style.transition = 'transform 1s cubic-bezier(0.22, 1, 0.36, 1), opacity 1s ease-out';
+
+        document.body.appendChild(miniHeart);
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 70 + Math.random() * 80;
+
+        const moveX = Math.cos(angle) * distance;
+        const moveY = Math.sin(angle) * distance;
+
+        const rotation = (Math.random() - 0.5) * 720;
+
+        requestAnimationFrame(() => {
+            miniHeart.style.transform = `
+                translate(${moveX}px, ${moveY}px)
+                rotate(${rotation}deg)
+                scale(${0.3 + Math.random() * 0.7})
+            `;
+            miniHeart.style.opacity = '0';
+        });
+
+        setTimeout(() => {
+            miniHeart.remove();
+        }, 1000);
+    }    
+}
+
+function explodeMainHeart() {
+
+    // Evitar spam
+    if (treeCanvas.classList.contains("exploding")) return;
+    treeCanvas.classList.add("exploding");
+
+    const rect = treeCanvas.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // Ocultar corazón principal
+    treeCanvas.style.transform = "translate(-50%, -50%) scale(0)";
+    treeCanvas.style.transition = "transform 0.3s ease";
+
+    const heartsCount = 25;
+
+    for (let i = 0; i < heartsCount; i++) {
+        const heart = document.createElement("div");
+        heart.innerHTML = "❤️";
+        heart.style.position = "fixed";
+        heart.style.left = centerX + "px";
+        heart.style.top = centerY + "px";
+        heart.style.fontSize = (16 + Math.random() * 18) + "px";
+        heart.style.pointerEvents = "none";
+        heart.style.zIndex = "200";
+
+        document.body.appendChild(heart);
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 80 + Math.random() * 120;
+
+        const x = Math.cos(angle) * distance;
+        const y = Math.sin(angle) * distance;
+
+        heart.animate([
+            { transform: "translate(0,0) scale(1)", opacity: 1 },
+            { transform: `translate(${x}px, ${y}px) scale(0.5)`, opacity: 0 }
+        ], {
+            duration: 900,
+            easing: "ease-out"
+        });
+
+        setTimeout(() => heart.remove(), 900);
+    }
+
+    // Volver a aparecer
+    setTimeout(() => {
+        treeCanvas.style.transform = "translate(-50%, -50%) scale(1)";
+        treeCanvas.classList.remove("exploding");
+    }, 500);
+}
+
+    </script>
+</body>
+</html>
